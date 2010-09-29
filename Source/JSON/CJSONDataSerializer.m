@@ -35,7 +35,14 @@ static NSData *kNULL = NULL;
 static NSData *kFalse = NULL;
 static NSData *kTrue = NULL;
 
+@interface CJSONDataSerializer ()
+@property (nonatomic, retain) NSOperationQueue *operationQueue;
+@end
+
+
 @implementation CJSONDataSerializer
+
+@synthesize operationQueue;
 
 + (void)initialize
 {
@@ -255,6 +262,39 @@ while ((theKey = [theEnumerator nextObject]) != NULL)
 [theData appendBytes:"}" length:1];
 
 return(theData);
+}
+
+#if NS_BLOCKS_AVAILABLE
+- (void)serializeArray:(NSArray *)inArray completionBlock:(void (^)(NSData *result, NSError *error))block 
+{
+	[self.operationQueue addOperationWithBlock:^{
+		NSError *serializationError = nil;
+		NSData *serializedData = [self serializeArray:inArray error:&serializationError];
+		dispatch_async(dispatch_get_main_queue(), ^{
+			block(serializedData, serializationError);
+		});
+	}];
+}
+
+- (void)serializeDictionary:(NSDictionary *)inDictionary completionBlock:(void (^)(NSData *result, NSError *error))block 
+{
+	[self.operationQueue addOperationWithBlock:^{
+		NSError *serializationError = nil;
+		NSData *serializedData = [self serializeDictionary:inDictionary error:&serializationError];
+		dispatch_async(dispatch_get_main_queue(), ^{
+			block(serializedData, serializationError);
+		});
+	}];
+}
+#endif
+
+- (NSOperationQueue *)operationQueue {
+	return operationQueue ? : (operationQueue = [[NSOperationQueue alloc] init]);
+}
+
+- (void)dealloc {	
+	[operationQueue release];
+	[super dealloc];
 }
 
 @end

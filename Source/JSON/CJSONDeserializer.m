@@ -99,8 +99,8 @@ else
 }
 
 #if NS_BLOCKS_AVAILABLE
-- (void)deserializeAsDictionary:(NSData *)inData completionBlock:(void (^)(id result, NSError *error))block {
-	
+- (void)deserializeAsDictionary:(NSData *)inData completionBlock:(void (^)(id result, NSError *error))block 
+{	
 	NSError *noDataError = nil;
 	if (inData == NULL || [inData length] == 0) {
 		noDataError = [NSError errorWithDomain:kJSONDeserializerErrorDomain code:-1 userInfo:NULL];
@@ -123,8 +123,8 @@ else
 	}];
 }
 
-- (void)deserializeAsArray:(NSData *)inData completionBlock:(void (^)(id result, NSError *error))block {
-	
+- (void)deserializeAsArray:(NSData *)inData completionBlock:(void (^)(id result, NSError *error))block 
+{	
 	NSError *nullInDataError = nil;
 	if (inData == NULL || [inData length] == 0) {
 		nullInDataError = [NSError errorWithDomain:kJSONDeserializerErrorDomain code:-1 userInfo:NULL];
@@ -148,12 +148,13 @@ else
 }
 #endif
 
-- (NSOperationQueue *)operationQueue {
+- (NSOperationQueue *)operationQueue 
+{	
 	return operationQueue ? : (operationQueue = [[NSOperationQueue alloc] init]);
 }
 
-- (void)dealloc {
-	
+- (void)dealloc 
+{	
 	[operationQueue release];
 	[super dealloc];
 }

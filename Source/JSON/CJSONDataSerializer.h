@@ -43,4 +43,9 @@
 - (NSData *)serializeArray:(NSArray *)inArray error:(NSError **)outError;
 - (NSData *)serializeDictionary:(NSDictionary *)inDictionary error:(NSError **)outError;
 
+#if NS_BLOCKS_AVAILABLE
+- (void)serializeArray:(NSArray *)inArray completionBlock:(void (^)(NSData *result, NSError *error))block;
+- (void)serializeDictionary:(NSDictionary *)inDictionary completionBlock:(void (^)(NSData *result, NSError *error))block;
+#endif
+
 @end
